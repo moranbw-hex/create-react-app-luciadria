@@ -32,6 +32,7 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 // @remove-on-eject-begin
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
@@ -246,6 +247,13 @@ module.exports = function(webpackEnv) {
             },
           },
           sourceMap: shouldUseSourceMap,
+          chunkFilter: (chunk) => {
+            // Exclude uglification for the `luciad` chunks
+            if (["luciad-main", "luciad-photon", "luciad-symbology", "luciad-view"].includes(chunk.name)) {
+              return false;
+            }
+            return true;
+          }
         }),
         // This is only used in production mode
         new OptimizeCSSAssetsPlugin({
@@ -273,6 +281,41 @@ module.exports = function(webpackEnv) {
       splitChunks: {
         chunks: 'all',
         name: false,
+        cacheGroups: {//split luciad into some chunks...
+          luciadMain: {
+            test: /[\\/]lib[\\/]luciad[\\/]ria[\\/]/,
+            name: 'luciad-main',
+            priority: 1,
+            enforce: true,
+            reuseExistingChunk: true
+          },
+          luciadPhoton: {
+            test: /[\\/]lib[\\/]luciad[\\/]ria[\\/]gen[\\/]/,
+            name: 'luciad-photon',
+            priority: 2,
+            //maxSize: 500000,
+            reuseExistingChunk: true
+          },
+          luciadSymbology: {
+            test: /[\\/]lib[\\/]luciad[\\/]symbology[\\/]/,
+            name: 'luciad-symbology',
+            priority: 2,
+            reuseExistingChunk: true
+          },
+          luciadView: {
+            test: /[\\/]lib[\\/]luciad[\\/]ria[\\/]view[\\/]/,
+            name: 'luciad-view',
+            priority: 2,
+            reuseExistingChunk: true
+          },
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 1,
+            enforce: true,
+            reuseExistingChunk: true
+          }
+        }
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
@@ -434,7 +477,7 @@ module.exports = function(webpackEnv) {
             // Unlike the application JS, we only compile the standard ES features.
             {
               test: /\.(js|mjs)$/,
-              exclude: /@babel(?:\/|\\{1,2})runtime/,
+              exclude: [/@babel(?:\/|\\{1,2})runtime/, paths.lib],
               loader: require.resolve('babel-loader'),
               options: {
                 babelrc: false,
@@ -534,6 +577,11 @@ module.exports = function(webpackEnv) {
                 },
                 'sass-loader'
               ),
+            },
+            // Adds support for loading LuciadRIA license
+            {
+              test: /\.txt$/,
+              use: 'raw-loader'
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
@@ -699,6 +747,12 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
+        new CopyWebpackPlugin([
+        //We need to copy ria resources, license, and photon web worker to lib/luciad, where __LUCIAD_ROOT__ points to.
+        //update: only need to do this for mil-sym now.
+        //{from: 'lib/luciad/view/photon', to: 'lib/luciad/view/photon'},
+        {from: 'lib/luciad/symbology/resources', to: 'lib/luciad/symbology/resources'},
+      ])
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell webpack to provide empty mocks for them so importing them works.
