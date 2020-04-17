@@ -73,6 +73,7 @@ module.exports = {
   proxySetup: resolveApp('src/setupProxy.js'),
   appNodeModules: resolveApp('node_modules'),
   lib: resolveApp('lib'),
+  luciad: resolveApp('node_moules/@luciad'),
   publicUrlOrPath,
 };
 
@@ -96,6 +97,7 @@ module.exports = {
   proxySetup: resolveApp('src/setupProxy.js'),
   appNodeModules: resolveApp('node_modules'),
   lib: resolveApp('lib'),
+  luciad: resolveApp('node_moules/@luciad'),
   publicUrlOrPath,
   // These properties only exist before ejecting:
   ownPath: resolveOwn('.'),
@@ -132,6 +134,7 @@ if (
     proxySetup: resolveOwn(`${templatePath}/src/setupProxy.js`),
     appNodeModules: resolveOwn('node_modules'),
     lib: resolveApp('lib'),
+    luciad: resolveApp('node_moules/@luciad'),
     publicUrlOrPath,
     // These properties only exist before ejecting:
     ownPath: resolveOwn('.'),

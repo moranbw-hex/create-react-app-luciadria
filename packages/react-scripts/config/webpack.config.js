@@ -293,29 +293,29 @@ module.exports = function(webpackEnv) {
         name: false,
         cacheGroups: {//split luciad into some chunks...
           luciadMain: {
-            test: /[\\/]lib[\\/]luciad[\\/]ria[\\/]/,
+            test: /[\\/]ria[\\/]/,
             name: 'luciad-main',
-            priority: 1,
+            priority: 2,
             enforce: true,
             reuseExistingChunk: true
           },
           luciadPhoton: {
-            test: /[\\/]lib[\\/]luciad[\\/]ria[\\/]gen[\\/]/,
+            test: /[\\/]ria[\\/]gen[\\/]/,
             name: 'luciad-photon',
-            priority: 2,
+            priority: 3,
             //maxSize: 500000,
             reuseExistingChunk: true
           },
           luciadSymbology: {
-            test: /[\\/]lib[\\/]luciad[\\/]symbology[\\/]/,
+            test: /[\\/]ria-symbology[\\/]/,
             name: 'luciad-symbology',
-            priority: 2,
+            priority: 3,
             reuseExistingChunk: true
           },
           luciadView: {
-            test: /[\\/]lib[\\/]luciad[\\/]ria[\\/]view[\\/]/,
+            test: /[\\/]ria[\\/]view[\\/]/,
             name: 'luciad-view',
-            priority: 2,
+            priority: 3,
             reuseExistingChunk: true
           },
           commons: {
@@ -490,7 +490,7 @@ module.exports = function(webpackEnv) {
             // Unlike the application JS, we only compile the standard ES features.
             {
               test: /\.(js|mjs)$/,
-              exclude: [/@babel(?:\/|\\{1,2})runtime/, paths.lib],
+              exclude: [/@babel(?:\/|\\{1,2})runtime/, paths.lib, paths.luciad],
               loader: require.resolve('babel-loader'),
               options: {
                 babelrc: false,
