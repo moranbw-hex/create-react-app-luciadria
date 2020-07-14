@@ -261,13 +261,14 @@ module.exports = function (webpackEnv) {
             },
           },
           sourceMap: shouldUseSourceMap,
-          chunkFilter: (chunk) => {
+          exclude: [/\/luciad_main/, /\/luciad_photon/, /\/luciad_symbology/, /\/luciad_view/]
+          /*chunkFilter: (chunk) => {
             // Exclude uglification for the `luciad` chunks
-            if (["luciad-main", "luciad-photon", "luciad-symbology", "luciad-view"].includes(chunk.name)) {
+            if (["luciad_main", "luciad_photon", "luciad_symbology", "luciad_view"].includes(chunk.name)) {
               return false;
             }
             return true;
-          }
+          }*/
         }),
         // This is only used in production mode
         new OptimizeCSSAssetsPlugin({
@@ -298,27 +299,27 @@ module.exports = function (webpackEnv) {
         cacheGroups: {//split luciad into some chunks...
           luciadMain: {
             test: /[\\/]ria[\\/]/,
-            name: 'luciad-main',
+            name: 'luciad_main',
             priority: 2,
             enforce: true,
             reuseExistingChunk: true
           },
           luciadPhoton: {
             test: /[\\/]ria[\\/]gen[\\/]/,
-            name: 'luciad-photon',
+            name: 'luciad_photon',
             priority: 3,
             //maxSize: 500000,
             reuseExistingChunk: true
           },
           luciadSymbology: {
             test: /[\\/]ria-symbology[\\/]/,
-            name: 'luciad-symbology',
+            name: 'luciad_symbology',
             priority: 3,
             reuseExistingChunk: true
           },
           luciadView: {
             test: /[\\/]ria[\\/]view[\\/]/,
-            name: 'luciad-view',
+            name: 'luciad_view',
             priority: 3,
             reuseExistingChunk: true
           },
