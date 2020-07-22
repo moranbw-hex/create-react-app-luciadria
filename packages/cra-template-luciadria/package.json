@@ -1,0 +1,26 @@
+{
+  "name": "cra-template-luciadria",
+  "version": "0.0.1",
+  "keywords": [
+    "react",
+    "create-react-app",
+    "template"
+  ],
+  "description": "Bare-bones CRA + LuciadRIA.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moranbw-hex/create-react-app-luciadria.git",
+    "directory": "packages/cra-template-luciadria"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=10"
+  },
+  "bugs": {
+    "url": "https://github.com/facebook/create-react-app/issues"
+  },
+  "files": [
+    "template",
+    "template.json"
+  ]
+}
