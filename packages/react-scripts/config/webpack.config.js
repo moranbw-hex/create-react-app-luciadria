@@ -279,7 +279,7 @@ module.exports = function (webpackEnv) {
             },
           },
           sourceMap: shouldUseSourceMap,
-          exclude: [/\/luciad_main/, /\/luciad_photon/, /\/luciad_symbology/, /\/luciad_view/]
+          exclude: [/\/luciad_main/, /\/luciad_photon/, /\/luciad_symbology/, /\/luciad_view/, /\/luciad_geometry/]
           /*chunkFilter: (chunk) => {
             // Exclude uglification for the `luciad` chunks
             if (["luciad_main", "luciad_photon", "luciad_symbology", "luciad_view"].includes(chunk.name)) {
@@ -316,28 +316,63 @@ module.exports = function (webpackEnv) {
         name: false,
         cacheGroups: {//split luciad into some chunks...
           luciadMain: {
-            test: /[\\/]ria[\\/]/,
+            test(module, chunks){
+              if (!module || !module.resource) {
+                return false;
+              }
+              const filename = module.resource;
+              return paths.ria && filename.indexOf(paths.ria) >= 0;
+            },
             name: 'luciad_main',
             priority: 2,
             enforce: true,
             reuseExistingChunk: true
           },
           luciadPhoton: {
-            test: /[\\/]ria[\\/]gen[\\/]/,
+            test(module, chunks){
+              if (!module || !module.resource) {
+                return false;
+              }
+              const filename = module.resource;
+              return paths.riaPhoton && filename.indexOf(paths.riaPhoton) >= 0;
+            },
             name: 'luciad_photon',
-            priority: 3,
-            //maxSize: 500000,
-            reuseExistingChunk: true
-          },
-          luciadSymbology: {
-            test: /[\\/]ria-symbology[\\/]/,
-            name: 'luciad_symbology',
             priority: 3,
             reuseExistingChunk: true
           },
           luciadView: {
-            test: /[\\/]ria[\\/]view[\\/]/,
+            test(module, chunks){
+              if (!module || !module.resource) {
+                return false;
+              }
+              const filename = module.resource;
+              return paths.riaView && filename.indexOf(paths.riaView) >= 0;
+            },
             name: 'luciad_view',
+            priority: 3,
+            reuseExistingChunk: true
+          },
+          luciadGeometry: {
+            test(module, chunks){
+              if (!module || !module.resource) {
+                return false;
+              }
+              const filename = module.resource;
+              return paths.riaGeometry && filename.indexOf(paths.riaGeometry) >= 0;
+            },
+            name: 'luciad_geometry',
+            priority: 3,
+            reuseExistingChunk: true
+          },
+          luciadSymbology: {
+            test(module, chunks){
+              if (!module || !module.resource) {
+                return false;
+              }
+              const filename = module.resource;
+              return paths.riaSymbology && filename.indexOf(paths.riaSymbology) >= 0;
+            },
+            name: 'luciad_symbology',
             priority: 3,
             reuseExistingChunk: true
           },
@@ -506,7 +541,7 @@ module.exports = function (webpackEnv) {
             // Unlike the application JS, we only compile the standard ES features.
             {
               test: /\.(js|mjs)$/,
-              exclude: [/@babel(?:\/|\\{1,2})runtime/, paths.lib, paths.luciad],
+              exclude: [/@babel(?:\/|\\{1,2})runtime/, paths.ria, paths.riaGeometry, paths.riaSymbology],
               loader: require.resolve('babel-loader'),
               options: {
                 babelrc: false,
