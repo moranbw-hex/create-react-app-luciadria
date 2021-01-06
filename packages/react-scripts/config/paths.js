@@ -56,6 +56,14 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
+const realPath = (modulePath) => {
+  const fullPath = path.join(appDirectory, modulePath);
+  if (fs.existsSync(fullPath)) {
+    return fs.realpathSync(fullPath); // resolve symlink if path exists
+  }
+  return fullPath; // otherwise just return path as-is, to avoid webpack config errors
+};
+
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
@@ -73,11 +81,11 @@ module.exports = {
   proxySetup: resolveApp('src/setupProxy.js'),
   appNodeModules: resolveApp('node_modules'),
   swSrc: resolveModule(resolveApp, 'src/service-worker'),
-  ria: resolveApp('node_modules/@luciad/ria'),
-  riaPhoton: resolveApp('node_modules/@luciad/ria/gen'),
-  riaView: resolveApp('node_modules/@luciad/ria/view'),
-  riaGeometry: resolveApp('node_modules/@luciad/ria-geometry'),
-  riaSymbology: resolveApp('node_modules/@luciad/ria-symbology'),
+  ria: realPath('node_modules/@luciad/ria'),
+  riaPhoton: realPath('node_modules/@luciad/ria/gen'),
+  riaView: realPath('node_modules/@luciad/ria/view'),
+  riaGeometry: realPath('node_modules/@luciad/ria-geometry'),
+  riaSymbology: realPath('node_modules/@luciad/ria-symbology'),
   publicUrlOrPath,
 };
 
@@ -101,11 +109,11 @@ module.exports = {
   proxySetup: resolveApp('src/setupProxy.js'),
   appNodeModules: resolveApp('node_modules'),
   swSrc: resolveModule(resolveApp, 'src/service-worker'),
-  ria: resolveApp('node_modules/@luciad/ria'),
-  riaPhoton: resolveApp('node_modules/@luciad/ria/gen'),
-  riaView: resolveApp('node_modules/@luciad/ria/view'),
-  riaGeometry: resolveApp('node_modules/@luciad/ria-geometry'),
-  riaSymbology: resolveApp('node_modules/@luciad/ria-symbology'),
+  ria: realPath('node_modules/@luciad/ria'),
+  riaPhoton: realPath('node_modules/@luciad/ria/gen'),
+  riaView: realPath('node_modules/@luciad/ria/view'),
+  riaGeometry: realPath('node_modules/@luciad/ria-geometry'),
+  riaSymbology: realPath('node_modules/@luciad/ria-symbology'),
   publicUrlOrPath,
   // These properties only exist before ejecting:
   ownPath: resolveOwn('.'),
@@ -142,11 +150,11 @@ if (
     proxySetup: resolveOwn(`${templatePath}/src/setupProxy.js`),
     appNodeModules: resolveOwn('node_modules'),
     swSrc: resolveModule(resolveOwn, `${templatePath}/src/service-worker`),
-    ria: resolveApp('node_modules/@luciad/ria'),
-    riaPhoton: resolveApp('node_modules/@luciad/ria/gen'),
-    riaView: resolveApp('node_modules/@luciad/ria/view'),
-    riaGeometry: resolveApp('node_modules/@luciad/ria-geometry'),
-    riaSymbology: resolveApp('node_modules/@luciad/ria-symbology'),
+    ria: realPath('node_modules/@luciad/ria'),
+    riaPhoton: realPath('node_modules/@luciad/ria/gen'),
+    riaView: realPath('node_modules/@luciad/ria/view'),
+    riaGeometry: realPath('node_modules/@luciad/ria-geometry'),
+    riaSymbology: realPath('node_modules/@luciad/ria-symbology'),
     publicUrlOrPath,
     // These properties only exist before ejecting:
     ownPath: resolveOwn('.'),
